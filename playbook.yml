@@ -6,12 +6,8 @@
 
   vars:
     packages_to_install:
-      - curl
-      - git
-      - htop
-      - vim
-      - unzip
-      - tree
+      - apache2
+      - openssh-server
 
   tasks:
     - name: Update apt cache
