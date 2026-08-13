@@ -1,0 +1,37 @@
+---
+- name: Install baseline packages via ansible-pull
+  hosts: localhost
+  connection: local
+  become: true
+
+  vars:
+    packages_to_install:
+      - curl
+      - git
+      - htop
+      - vim
+      - unzip
+      - tree
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Install packages
+      apt:
+        name: "{{ packages_to_install }}"
+        state: present
+
+    - name: Show installed versions (sanity check)
+      command: "{{ item }} --version"
+      loop:
+        - curl
+        - git
+      register: versions
+      changed_when: false
+
+    - name: Print versions
+      debug:
+        var: versions.results
