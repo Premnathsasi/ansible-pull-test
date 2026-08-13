@@ -20,14 +20,29 @@
         name: "{{ packages_to_install }}"
         state: present
 
-    - name: Show installed versions (sanity check)
-      command: "{{ item }} --version"
+    - name: Ensure services are running and enabled
+      service:
+        name: "{{ item }}"
+        state: started
+        enabled: true
       loop:
         - apache2
-        - openssh-server
-      register: versions
+        - ssh
+
+    - name: Check apache2 version
+      command: apache2 -v
+      register: apache_version
       changed_when: false
+
+    - name: Check sshd version
+      command: sshd -V
+      register: sshd_version
+      changed_when: false
+      # sshd -V exits 1 even on success (prints to stderr), so don't fail the play
+      failed_when: false
 
     - name: Print versions
       debug:
-        var: versions.results
+        msg:
+          - "{{ apache_version.stdout }}"
+          - "{{ sshd_version.stderr }}"
