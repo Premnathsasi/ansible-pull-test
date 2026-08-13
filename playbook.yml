@@ -23,8 +23,8 @@
     - name: Show installed versions (sanity check)
       command: "{{ item }} --version"
       loop:
-        - curl
-        - git
+        - apache2
+        - openssh-server
       register: versions
       changed_when: false
 
